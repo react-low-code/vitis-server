@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "module": "commonjs",
+    "target": "ESNext",
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "exclude": [
+    "./node_modules"
+  ]
+}
