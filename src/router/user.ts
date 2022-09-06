@@ -30,6 +30,9 @@ router.post('/add', async (ctx) => {
 
 router.post('/update', async (ctx) => {
         const { account, editable = false, releasable = false } = ctx.request.body
+        if (!account) {
+                throw new ParamException('account是必填字段')   
+        }
         const result = await UserModel.findOneAndUpdate({account}, {editable, releasable})
         if (!result) {
                 throw new ParamException(`不存在${account}`)
