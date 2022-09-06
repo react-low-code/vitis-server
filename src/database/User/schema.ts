@@ -5,7 +5,7 @@ import ExternalException from '../../exception/externalException'
 import { modelName } from './config'
 import ParamException from '../../exception/paramException';
 import DBException from '../../exception/dbException'
-import { saltRounds } from '../../config'
+import { saltRounds, secret } from '../../config'
 
 interface UserInfo {
     /** 账号 */
@@ -65,10 +65,9 @@ userSchema.statics.login = async function (info: Pick<UserInfo, 'account' | 'pas
         try {
             const matched =  await bcrypt.compare(info.password, one.password)
             if (matched) {
-                return jwt.sign({ _id: one._id, account: one.account }, 'vitis', {
+                return jwt.sign({ _id: one._id, account: one.account }, secret, {
                     expiresIn: '1d',
                 })
-                
             } else {
                 throw new ParamException(`${info.account}的密码错误`)
             }

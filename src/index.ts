@@ -6,6 +6,7 @@ import koaStatic from 'koa-static'
 import router from './router'
 import catchError from './middlewares/catchError'
 import errorHandler from './utils/errorHandler'
+import auth from './middlewares/auth'
 
 const app = new Koa()
 
@@ -15,13 +16,14 @@ app
         context.set({
             'Access-Control-Allow-Origin':'*',
             'Access-Control-Allow-Methods': 'GET,POST,DELETE',
-            'Access-Control-Allow-Headers': 'Content-Type'
+            'Access-Control-Allow-Headers': 'Content-Type, authorization'
         })
         await next()
     })
     .use(koaStatic(process.cwd() + '/static')) 
     .use(bodyParser())
     .use(compress())
+    .use(auth)
     .use(router.routes())
     .use(router.allowedMethods())
     .on('error', errorHandler)
