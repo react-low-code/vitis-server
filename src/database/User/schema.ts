@@ -17,7 +17,7 @@ interface UserInfo {
     /** 是否有发布应用的权限 */
     releasable: boolean;
 }
-export interface User extends UserInfo{
+interface User extends UserInfo{
     /** 添加新的账号*/
     add: () => Promise<any>
 }
@@ -80,3 +80,4 @@ userSchema.statics.login = async function (info: Pick<UserInfo, 'account' | 'pas
 }
 
 export default userSchema
+export type { User }

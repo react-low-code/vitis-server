@@ -5,25 +5,19 @@ import semver from 'semver'
 import ParamException from '../exception/paramException'
 import successHandler from '../utils/successHandler'
 import DBException from '../exception/dbException'
+import { checkComponentParam } from '../middlewares/routerParam'
 
 const router = new Router()
 
 router.post('/upload', 
+    checkComponentParam,
     async (context, next) => {
-        const { packageName, version, description } = context.request.body
-        if (!packageName) {
-            throw new ParamException('packageName 是必填字段')
-        } else if (!version) {
-            throw new ParamException('version 是必填字段')
-        } else if (!description) {
-            throw new ParamException('description 是必填字段')
-        } else {
-            if (!validate(packageName)) {
-                throw new ParamException(`${packageName}不是合法 npm 包名`)
-            }
-
-            await next()
+        const { packageName } = context.request.body
+        if (!validate(packageName)) {
+            throw new ParamException(`${packageName}不是合法 npm 包名`)
         }
+
+        await next()
     },
     async (context) => {
         const { packageName, version, description } = context.request.body
