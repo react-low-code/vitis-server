@@ -1,1 +1,1 @@
-export const modelName = 'components'
+export const modelName = 'user'
