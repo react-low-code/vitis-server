@@ -22,7 +22,7 @@ export interface User extends UserInfo{
     add: () => Promise<any>
 }
 
- const userSchema =  new mongoose.Schema<User>({
+ const userSchema = new mongoose.Schema<User>({
     account: {
         unique: true,
         type: String,

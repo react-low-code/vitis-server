@@ -11,7 +11,7 @@ export default async function(ctx: Koa.Context, next: Koa.Next) {
             ctx.status = 500,
             ctx.body = {
                 code: '-1',
-                msg: '服务器内部错误'
+                msg: '服务器内部错误:' + error
             }
         }
     }
