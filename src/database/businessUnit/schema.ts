@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import { ComponentBaseInfo } from '../Components/schema'
 import { createProject } from '../../servers/gitlab'
+import { modelName } from './config'
+import DBException from '../../exception/dbException';
 
 interface BusinessUnitInfo {
     name: string;
@@ -37,6 +39,7 @@ const componentSchema = new mongoose.Schema<ComponentBaseInfo>({
 const schema = new mongoose.Schema<BusinessUnit>({
     name: {
         type: String,
+        unique: true,
         required: [true,'name 是必填的字段']
     },
     desc: {
@@ -69,6 +72,18 @@ schema.methods.add = async function() {
     return await this.save()
 }
 
+schema.statics.addApplication = async function (name: string, applicationId: string) {
+    const one = await mongoose.model<BusinessUnitInfo>(modelName).findOne({name}).exec()
+    if (one) {
+        one.applications.push(applicationId)
+        await one.updateOne({
+            applications: one.applications
+        })
+    } else {
+        throw `业务单元${name}不存在`
+    }
+}
+
 export default schema
-export type { BusinessUnit } 
+export type { BusinessUnit, BusinessUnitInfo } 
 export { componentSchema }

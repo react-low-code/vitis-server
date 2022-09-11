@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 import { noAuths } from '../config'
 import AuthException from '../exception/authException'
 import { secret } from '../config'
+import { Auth } from '../types'
 
-export default async function auth(ctx: Koa.Context, next: Koa.Next) {
+export default async function auth(ctx: Koa.Context & Auth, next: Koa.Next) {
     if (noAuths.includes(ctx.path)) {
         await next()
     } else {
@@ -16,6 +17,7 @@ export default async function auth(ctx: Koa.Context, next: Koa.Next) {
         if (new Date().getTime() / 1000 > tokenItem.exp) {
             throw new AuthException('登录过期')
         }
+        ctx.account = tokenItem.account
         await next()
     }
 }

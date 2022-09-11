@@ -4,25 +4,14 @@ import ParamException from '../exception/paramException';
 import DBException from '../exception/dbException';
 import Model from '../database/businessUnit/model'
 import successHandler from '../utils/successHandler';
-import { checkComponentParam } from '../middlewares/routerParam'
+import { checkComponentParam, checkBUName } from '../middlewares/routerParam'
 
 const router = new Router()
 
-async function checkBUName(ctx: Koa.Context, next: Koa.Next) {
-    const { name } = ctx.request.body
-    if (!name) {
-        throw new ParamException('name 是必填字段')
-    } else {
-        await next()
-    }
-}
-
 router.post('/add', 
+    checkBUName,
     async (ctx, next) => {
-        const { name, desc } = ctx.request.body;
-        if (!name) {
-            throw new ParamException('name 是必填字段')
-        }
+        const { desc } = ctx.request.body;
 
         if (!desc) {
             throw new ParamException('desc 是必填字段')
@@ -30,14 +19,14 @@ router.post('/add',
         await next()
     }, 
     async (ctx) => {
-        const { name, desc } = ctx.request.body;
-        const result = await Model.findOne({name}).count()
+        const { BUName, desc } = ctx.request.body;
+        const result = await Model.findOne({name: BUName}).count()
         if (result > 0) {
-            throw new ParamException(`${name}已存在`)
+            throw new ParamException(`${BUName}已存在`)
         }
 
         const bu = new Model({
-            name,
+            name: BUName,
             desc,
             components: [],
             applications: []
@@ -56,14 +45,14 @@ router.post('/pick/component',
     checkBUName,
     checkComponentParam,
     async (ctx) => {
-        const { packageName, name, version, description } = ctx.request.body
-        const result = await Model.findOne({name})
+        const { packageName, BUName, version, description } = ctx.request.body
+        const result = await Model.findOne({name: BUName})
         if (!result) {
-            throw new ParamException(`不存在业务单元${name}`)
+            throw new ParamException(`不存在业务单元${BUName}`)
         }
 
         if (result.components.find((item) => item.packageName === packageName)) {
-            throw new ParamException(`${name}中已存在${packageName}组件`)
+            throw new ParamException(`${BUName}中已存在${packageName}组件`)
         }
         await result.updateOne({
             components: [{packageName, version, description}, ...result.components]
@@ -77,14 +66,14 @@ router.post('/update/component/version',
     checkBUName,
     checkComponentParam,
     async (ctx) => {
-        const { packageName, buId, version, description } = ctx.request.body
-        const result = await Model.findById(buId)
+        const { packageName, BUName, version, description } = ctx.request.body
+        const result = await Model.findOne({name: BUName})
         if (!result) {
-            throw new ParamException(`不存在业务单元${buId}`)
+            throw new ParamException(`不存在业务单元${BUName}`)
         }
         const index = result.components.findIndex(item => item.packageName === packageName)
         if (index < 0) {
-            throw new ParamException(`业务单元${buId}不存在${packageName}组件`)
+            throw new ParamException(`业务单元${BUName}不存在${packageName}组件`)
         }
 
         result.components.splice(index, 1, {
@@ -107,10 +96,10 @@ router.get('/list', async (ctx) => {
 })
 
 router.get('/components', checkBUName, async (ctx) => {
-    const { name } = ctx.request.body
-    const result = await Model.findOne({name})
+    const { BUName } = ctx.request.body
+    const result = await Model.findOne({name: BUName})
     if (!result) {
-        throw new ParamException(`不存在业务单元${name}`)
+        throw new ParamException(`不存在业务单元${BUName}`)
     }
 
     successHandler(ctx, result.components)

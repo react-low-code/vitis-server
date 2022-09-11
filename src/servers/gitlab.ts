@@ -70,3 +70,15 @@ export async function createBranch(projectId: string, branch: string, ref: strin
 
     return result.data
 }
+
+export async function getFileContent(projectId: string, ref: string, file_path: string) {
+    const result = await instance.request({
+        method: 'GET',
+        url: `/api/v4/projects/${projectId}/repository/files/${encodeURIComponent(file_path)}/raw`,
+        params: {
+            ref
+        }
+    })
+
+    return result.data
+}

@@ -13,3 +13,12 @@ export async function checkComponentParam(ctx: Koa.Context, next: Koa.Next) {
         await next()
     }
 }
+
+export async function checkBUName(ctx: Koa.Context, next: Koa.Next) {
+    const { BUName } = ctx.request.body
+    if (!BUName) {
+        throw new ParamException('BUName 是必填字段')
+    } else {
+        await next()
+    }
+}
