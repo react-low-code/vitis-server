@@ -19,14 +19,18 @@ async function checkBUId(ctx: Koa.Context, next: Koa.Next) {
 
 router.post('/add', 
     async (ctx, next) => {
-        const { name } = ctx.request.body;
+        const { name, desc } = ctx.request.body;
         if (!name) {
             throw new ParamException('name 是必填字段')
+        }
+
+        if (!desc) {
+            throw new ParamException('desc 是必填字段')
         }
         await next()
     }, 
     async (ctx) => {
-        const { name } = ctx.request.body;
+        const { name, desc } = ctx.request.body;
         const result = await Model.findOne({name}).count()
         if (result > 0) {
             throw new ParamException(`${name}已存在`)
@@ -34,6 +38,7 @@ router.post('/add',
 
         const bu = new Model({
             name,
+            desc,
             components: [],
             applications: []
         })

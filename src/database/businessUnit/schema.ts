@@ -4,6 +4,7 @@ import { createProject } from '../../servers/gitlab'
 
 interface BusinessUnitInfo {
     name: string;
+    desc: string;
     schemaProjectId: string;
     codeProjectId: string;
     components: ComponentBaseInfo[];
@@ -38,6 +39,10 @@ const schema = new mongoose.Schema<BusinessUnit>({
         type: String,
         required: [true,'name 是必填的字段']
     },
+    desc: {
+        type: String,
+        required: [true,'desc 是必填的字段']
+    },
     schemaProjectId: {
         type: String,
         required: [true,'schemaProjectId 是必填的字段']
@@ -57,9 +62,9 @@ const schema = new mongoose.Schema<BusinessUnit>({
 })
 
 schema.methods.add = async function() {
-    const [schemaProjectId, codeProjectId] = await Promise.all([createProject(`${this.name}-schema`), createProject(`${this.name}-code`)])
+    const [schemaProjectId, codeProjectId] = await Promise.all([createProject(`${this.name}-schema`, `用来保存${this.name}业务单元的应用的 Schema`), createProject(`${this.name}-code`, `用来保存${this.name}业务单元的应用的源码`)])
     this.schemaProjectId = schemaProjectId;
-    this.codeProjectId = codeProjectId
+    this.codeProjectId = codeProjectId;
 
     return await this.save()
 }
