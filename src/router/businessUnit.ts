@@ -106,4 +106,14 @@ router.get('/list', async (ctx) => {
     successHandler(ctx, result)
 })
 
+router.get('/components', checkBUId, async (ctx) => {
+    const { buId } = ctx.request.body
+    const result = await Model.findById(buId)
+    if (!result) {
+        throw new ParamException(`不存在业务单元${buId}`)
+    }
+
+    successHandler(ctx, result.components)
+})
+
 export default router
