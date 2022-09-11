@@ -8,10 +8,10 @@ import { checkComponentParam } from '../middlewares/routerParam'
 
 const router = new Router()
 
-async function checkBUId(ctx: Koa.Context, next: Koa.Next) {
-    const { buId } = ctx.request.body
-    if (!buId) {
-        throw new ParamException('buId 是必填字段')
+async function checkBUName(ctx: Koa.Context, next: Koa.Next) {
+    const { name } = ctx.request.body
+    if (!name) {
+        throw new ParamException('name 是必填字段')
     } else {
         await next()
     }
@@ -53,17 +53,17 @@ router.post('/add',
 )
 
 router.post('/pick/component', 
-    checkBUId,
+    checkBUName,
     checkComponentParam,
     async (ctx) => {
-        const { packageName, buId, version, description } = ctx.request.body
-        const result = await Model.findById(buId)
+        const { packageName, name, version, description } = ctx.request.body
+        const result = await Model.findOne({name})
         if (!result) {
-            throw new ParamException(`不存在业务单元${buId}`)
+            throw new ParamException(`不存在业务单元${name}`)
         }
 
         if (result.components.find((item) => item.packageName === packageName)) {
-            throw new ParamException(`${buId}中已存在${packageName}组件`)
+            throw new ParamException(`${name}中已存在${packageName}组件`)
         }
         await result.updateOne({
             components: [{packageName, version, description}, ...result.components]
@@ -74,7 +74,7 @@ router.post('/pick/component',
 )
 
 router.post('/update/component/version', 
-    checkBUId,
+    checkBUName,
     checkComponentParam,
     async (ctx) => {
         const { packageName, buId, version, description } = ctx.request.body
@@ -102,15 +102,15 @@ router.post('/update/component/version',
 )
 
 router.get('/list', async (ctx) => {
-    const result = await Model.find({}, { applications: 0, schemaProjectId: 0, codeProjectId: 0 }).exec()
+    const result = await Model.find({}, { applications: 0, schemaProjectId: 0, codeProjectId: 0, _id: 0 }).exec()
     successHandler(ctx, result)
 })
 
-router.get('/components', checkBUId, async (ctx) => {
-    const { buId } = ctx.request.body
-    const result = await Model.findById(buId)
+router.get('/components', checkBUName, async (ctx) => {
+    const { name } = ctx.request.body
+    const result = await Model.findOne({name})
     if (!result) {
-        throw new ParamException(`不存在业务单元${buId}`)
+        throw new ParamException(`不存在业务单元${name}`)
     }
 
     successHandler(ctx, result.components)
