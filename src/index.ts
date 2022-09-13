@@ -23,7 +23,7 @@ app
     .use(koaStatic(process.cwd() + '/static')) 
     .use(bodyParser())
     .use(compress())
-    // .use(auth)
+    .use(auth)
     .use(router.routes())
     .use(router.allowedMethods())
     .on('error', errorHandler)
