@@ -45,7 +45,7 @@ router.post('/pick/component',
     checkBUName,
     checkComponentParam,
     async (ctx) => {
-        const { packageName, BUName, version, description } = ctx.request.body
+        const { packageName, BUName, version, description, title, componentName, iconUrl } = ctx.request.body
         const result = await Model.findOne({name: BUName})
         if (!result) {
             throw new ParamException(`不存在业务单元${BUName}`)
@@ -55,7 +55,7 @@ router.post('/pick/component',
             throw new ParamException(`${BUName}中已存在${packageName}组件`)
         }
         await result.updateOne({
-            components: [{packageName, version, description}, ...result.components]
+            components: [{packageName, version, description, title, componentName, iconUrl}, ...result.components]
         })
         
         successHandler(ctx)
@@ -66,7 +66,7 @@ router.post('/update/component/version',
     checkBUName,
     checkComponentParam,
     async (ctx) => {
-        const { packageName, BUName, version, description } = ctx.request.body
+        const { packageName, BUName, version, description, title, iconUrl, componentName} = ctx.request.body
         const result = await Model.findOne({name: BUName})
         if (!result) {
             throw new ParamException(`不存在业务单元${BUName}`)
@@ -79,7 +79,10 @@ router.post('/update/component/version',
         result.components.splice(index, 1, {
             packageName,
             version,
-            description
+            description,
+            title,
+            iconUrl,
+            componentName
         })
 
         await result.updateOne({

@@ -20,7 +20,7 @@ router.post('/upload',
         await next()
     },
     async (context) => {
-        const { packageName, version, description } = context.request.body
+        const { packageName, version, description, title, iconUrl, componentName } = context.request.body
         const result = await ComponentModel.findOne({packageName}).exec()
         if (result) {
             if (semver.lte(version, result.latest)) {
@@ -30,7 +30,10 @@ router.post('/upload',
                 await result.updateOne({
                     latest: version,
                     versions: [...result.versions, version],
-                    description
+                    description,
+                    title,
+                    iconUrl,
+                    componentName
                 })
                 successHandler(context)
             } catch (error: any) {
@@ -41,7 +44,10 @@ router.post('/upload',
                 versions: [version],
                 latest: version,
                 description,
-                packageName
+                packageName,
+                title,
+                iconUrl,
+                componentName
             })
             try {
                 await newComponent.save()

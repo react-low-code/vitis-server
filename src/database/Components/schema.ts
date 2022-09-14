@@ -4,6 +4,9 @@ export interface ComponentBaseInfo {
     packageName: string;
     description: string;
     version: string;
+    title: string;
+    componentName: string;
+    iconUrl: string;
 }
 
 export interface MarketComponent extends Omit<ComponentBaseInfo, "version">{
@@ -30,6 +33,18 @@ export default new mongoose.Schema<MarketComponent>({
     versions: {
         type: [String],
         required: [true, '组件全部版本是必填字段']
+    },
+    title: {
+        type: String,
+        required: [true, '组件中文名是必填字段']
+    },
+    componentName: {
+        type: String,
+        required: [true, '组件名是必填字段']
+    },
+    iconUrl: {
+        type: String,
+        required: [true, '组件缩略图链接']
     }
 })
 
