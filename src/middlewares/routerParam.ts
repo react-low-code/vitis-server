@@ -21,8 +21,7 @@ export async function checkComponentParam(ctx: Koa.Context, next: Koa.Next) {
 }
 
 export async function checkBUName(ctx: Koa.Context, next: Koa.Next) {
-    const { BUName } = ctx.request.body
-    if (!BUName) {
+    if (!ctx.request.body.BUName && !ctx.query.BUName) {
         throw new ParamException('BUName 是必填字段')
     } else {
         await next()

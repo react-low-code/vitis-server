@@ -87,4 +87,23 @@ router.get('/detail', async (context) => {
 
 })
 
+router.get('/versions', async (context) => {
+    const packageName = context.query.packageName
+    if (packageName) {
+        let result
+        try {
+            result = await ComponentModel.findOne({packageName}, {_id: 0}).exec()
+        } catch (error: any) {
+            throw new DBException(error)
+        }
+        if (result) {
+            successHandler(context, result?.versions)
+        } else {
+            throw new ParamException('不存在组件' + packageName)
+        }
+    } else {
+        throw new ParamException('packageName 是必填字段')
+    }
+})
+
 export default router

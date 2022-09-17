@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 import { ComponentBaseInfo } from '../Components/schema'
 import { createProject } from '../../servers/gitlab'
 import { modelName } from './config'
-import DBException from '../../exception/dbException';
 
 interface BusinessUnitInfo {
     name: string;
@@ -30,6 +29,18 @@ const componentSchema = new mongoose.Schema<ComponentBaseInfo>({
     version: {
         type: String,
         required: [true, '组件版本是必填字段']
+    },
+    title: {
+        type: String,
+        required: [true, '组件中文名是必填字段']
+    },
+    componentName: {
+        type: String,
+        required: [true, '组件名是必填字段']
+    },
+    iconUrl: {
+        type: String,
+        required: [true, '组件缩略图链接']
     }
 }, {
     id: false,

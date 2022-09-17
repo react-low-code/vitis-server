@@ -132,7 +132,7 @@ router.get('/schema', async (ctx) => {
 })
 
 router.get('/list', checkBUName, async (ctx, next) => {
-    const { BUName } = ctx.request.body
+    const { BUName } = ctx.query
     const BU = await BUModel.findOne({name: BUName})
     if (BU) {
         const list =  await Model.find({

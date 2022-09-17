@@ -85,10 +85,9 @@ router.post('/update/component/version',
             componentName
         })
 
-        await result.updateOne({
+        const j = await result.updateOne({
             components: result.components
         })
-
         successHandler(ctx)
     }
 )
@@ -99,7 +98,7 @@ router.get('/list', async (ctx) => {
 })
 
 router.get('/components', checkBUName, async (ctx) => {
-    const { BUName } = ctx.request.body
+    const { BUName } = ctx.query
     const result = await Model.findOne({name: BUName})
     if (!result) {
         throw new ParamException(`不存在业务单元${BUName}`)
