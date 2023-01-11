@@ -13,8 +13,9 @@ const app = new Koa()
 app
     .use(catchError)
     .use(async(context, next) => {
+        
         context.set({
-            'Access-Control-Allow-Origin':'*',
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET,POST,DELETE',
             'Access-Control-Allow-Headers': 'Content-Type, authorization'
         })

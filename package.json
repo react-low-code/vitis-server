@@ -35,5 +35,8 @@
     "multer": "^1.4.4",
     "semver": "^7.3.7",
     "validate-npm-package-name": "^4.0.0"
+  },
+  "engines": {
+    "node": "==14.17.0"
   }
 }

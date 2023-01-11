@@ -60,6 +60,12 @@ userSchema.methods.add = async function() {
 }
 
 userSchema.statics.login = async function (info: Pick<UserInfo, 'account' | 'password'>) {
+    if (!info.account) {
+        throw new ParamException('请输入账号')
+    } 
+    if (!info.password) {
+        throw new ParamException('请输入密码')
+    }
     const one = await mongoose.model<UserInfo>(modelName).findOne({account: info.account}).exec()
     if (one) {
         try {
