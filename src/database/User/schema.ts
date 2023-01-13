@@ -68,17 +68,13 @@ userSchema.statics.login = async function (info: Pick<UserInfo, 'account' | 'pas
     }
     const one = await mongoose.model<UserInfo>(modelName).findOne({account: info.account}).exec()
     if (one) {
-        try {
-            const matched =  await bcrypt.compare(info.password, one.password)
+        const matched =  await bcrypt.compare(info.password, one.password)
             if (matched) {
                 return jwt.sign({ _id: one._id, account: one.account }, secret, {
                     expiresIn: '1d',
                 })
             } else {
                 throw new ParamException(`${info.account}的密码错误`)
-            }
-        } catch (error: any) {
-            throw new ExternalException(error)
         }
     } else {
         throw new ParamException(`${info.account}不存在`)
