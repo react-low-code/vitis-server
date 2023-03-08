@@ -76,7 +76,7 @@ const schema = new mongoose.Schema<BusinessUnit>({
 })
 
 schema.methods.add = async function() {
-    const [schemaProjectId, codeProjectId] = await Promise.all([createProject(`${this.name}-schema`, `用来保存${this.name}业务单元的应用的 Schema`), createProject(`${this.name}-code`, `用来保存${this.name}业务单元的应用的源码`)])
+    const [schemaProjectId, codeProjectId] = await Promise.all([createProject(`${this.name}-schema`, `用来保存${this.name}业务单元下应用的 Schema`), createProject(`${this.name}-code`, `用来保存${this.name}业务单元下应用的源码`)])
     this.schemaProjectId = schemaProjectId;
     this.codeProjectId = codeProjectId;
 

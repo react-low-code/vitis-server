@@ -8,7 +8,6 @@ interface History {
     parentCommitId?: string;
     time: string;
     commitId: string;
-    projectId: string;
     commitMsg: string;
     filePath: string;
     branch: string;
@@ -21,6 +20,7 @@ interface ApplicationInfo {
     schemaVersionHistories: History[];
     releasedSchemaCommitId: string | null;
     releasedTime: string | null;
+    schemaProjectId: string;
     codeProjectId: string;
     codeCommitId: string | null;
 }
@@ -37,10 +37,6 @@ const historySchema = new mongoose.Schema<History>({
         unique: true,
         type: String,
         required: [true, 'commitId 是必填字段']
-    },
-    projectId: {
-        type: String,
-        required: [true, 'projectId 是必填字段']
     },
     commitMsg: {
         type: String,
@@ -76,6 +72,10 @@ const schema = new mongoose.Schema<Application>({
         type: String,
         required: [true, 'codeProjectId 是必填字段']
     },
+    schemaProjectId: {
+        type: String,
+        required: [true, 'schemaProjectId 是必填字段']
+    },
     codeCommitId: String
 })
 
@@ -93,11 +93,11 @@ schema.methods.add = async function(bu: BusinessUnitInfo, appSchema: any, accoun
         }]
     })
     
+    this.schemaProjectId = bu.schemaProjectId,
     this.schemaVersionHistories = [{
         user: account,
         time: created_at,
         commitId: id,
-        projectId: bu.schemaProjectId,
         commitMsg: commit_message,
         filePath: file_path,
         branch,

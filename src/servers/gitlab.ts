@@ -40,12 +40,20 @@ export async function createProject(name: string, description: string) {
 interface CreateCommitParam {
     branch: string, 
     commit_message: string, 
-    actions: {
-        action: string, file_path: string, [key: string]: any
-    }[],
+    actions: Action[],
     start_branch?: string,
     start_sha?: string,
     [attr: string]: any
+}
+
+interface Action {
+    action: 'create' | 'delete' | 'move' | 'update' | 'chmod',
+    file_path: string,
+    previous_path?: string,
+    content?: string,
+    encoding?: string,
+    last_commit_id?: string,
+    execute_filemode?: string
 }
 
 export async function createCommit(projectId: string, params: CreateCommitParam) {
