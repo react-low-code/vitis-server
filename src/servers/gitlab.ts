@@ -53,7 +53,7 @@ interface Action {
     content?: string,
     encoding?: string,
     last_commit_id?: string,
-    execute_filemode?: string
+    execute_filemode?: boolean
 }
 
 export async function createCommit(projectId: string, params: CreateCommitParam) {

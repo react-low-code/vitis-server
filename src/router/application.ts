@@ -87,7 +87,6 @@ router.post('/update', checkAppId, async (ctx, next) => {
         user: ctx.account || '未知',
         time: created_at,
         commitId: commitId,
-        projectId: projectId,
         commitMsg: commit_message,
         filePath,
         branch,
