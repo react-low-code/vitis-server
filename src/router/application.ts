@@ -12,7 +12,7 @@ import { getFileContent, createCommit } from '../servers/gitlab'
 const router = new Router()
 
 async function checkParams (ctx: Koa.Context & Auth, next: Koa.Next) {
-    const { schema, name, desc } = ctx.request.body;
+    const { schema, name, desc } = ctx.request.body as any;
 
     if (!name) {
         throw new ParamException(`name 是必填字段`)
@@ -26,7 +26,7 @@ async function checkParams (ctx: Koa.Context & Auth, next: Koa.Next) {
 }
 
 async function checkAppId(ctx: Koa.Context & Auth, next: Koa.Next) {
-    if (!ctx.request.body.id && !ctx.query.id) {
+    if (!ctx.request.body!.id && !ctx.query.id) {
         throw new ParamException('id 是必填字段')
     } else {
         await next()
@@ -37,7 +37,7 @@ router.post('/add',
     checkBUName,
     checkParams,
     async (ctx: Koa.Context & Auth) => {
-        const { schema, BUName, name, desc } = ctx.request.body
+        const { schema, BUName, name, desc } = ctx.request.body as any;
         const BU = await BUModel.findOne({name: BUName})
         if (BU) {
             const app = new Model({
@@ -63,7 +63,7 @@ router.post('/add',
 )
 
 router.post('/update', checkAppId, async (ctx, next) => {
-    const { filePath, projectId, schema, id, parentCommitId } = ctx.request.body
+    const { filePath, projectId, schema, id, parentCommitId } = ctx.request.body as any
     if (!schema) {
         throw new ParamException('schema 是必填字段')
     } else if (!filePath){

@@ -11,7 +11,7 @@ const router = new Router()
 router.post('/add', 
     checkBUName,
     async (ctx, next) => {
-        const { desc } = ctx.request.body;
+        const { desc } = ctx.request.body!;
 
         if (!desc) {
             throw new ParamException('desc 是必填字段')
@@ -19,7 +19,7 @@ router.post('/add',
         await next()
     }, 
     async (ctx) => {
-        const { BUName, desc } = ctx.request.body;
+        const { BUName, desc } = ctx.request.body!;
         const result = await Model.findOne({name: BUName}).count()
         if (result > 0) {
             throw new ParamException(`${BUName}已存在`)
@@ -45,7 +45,7 @@ router.post('/pick/component',
     checkBUName,
     checkComponentParam,
     async (ctx) => {
-        const { packageName, BUName, version, description, title, componentName, iconUrl } = ctx.request.body
+        const { packageName, BUName, version, description, title, componentName, iconUrl } = ctx.request.body!
         const result = await Model.findOne({name: BUName})
         if (!result) {
             throw new ParamException(`不存在业务单元${BUName}`)
@@ -66,7 +66,7 @@ router.post('/update/component/version',
     checkBUName,
     checkComponentParam,
     async (ctx) => {
-        const { packageName, BUName, version, description, title, iconUrl, componentName} = ctx.request.body
+        const { packageName, BUName, version, description, title, iconUrl, componentName} = ctx.request.body as any
         const result = await Model.findOne({name: BUName})
         if (!result) {
             throw new ParamException(`不存在业务单元${BUName}`)

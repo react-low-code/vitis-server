@@ -12,18 +12,18 @@ const router = new Router()
 router.post('/upload', 
     checkComponentParam,
     async (context, next) => {
-        const { packageName } = context.request.body
-        if (!validate(packageName)) {
+        const { packageName } = context.request.body!
+        if (!packageName || !validate(packageName as string)) {
             throw new ParamException(`${packageName}不是合法 npm 包名`)
         }
 
         await next()
     },
     async (context) => {
-        const { packageName, version, description, title, iconUrl, componentName } = context.request.body
+        const { packageName, version, description, title, iconUrl, componentName } = context.request.body!
         const result = await ComponentModel.findOne({packageName}).exec()
         if (result) {
-            if (semver.lte(version, result.latest)) {
+            if (semver.lte(version as string, result.latest)) {
                 throw new ParamException(`${version}不大于最新的版本号${result.latest}`)
             }
             try {
